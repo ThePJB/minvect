@@ -32,7 +32,7 @@ impl Vec2 {
     pub fn magnitude(&self) -> f32 { (self.x*self.x + self.y*self.y).sqrt() }
     pub fn mag2(&self) -> f32 { self.x*self.x + self.y*self.y }
     pub fn normalize(&self) -> Vec2 { self.div_scalar(self.magnitude()) }
-    pub fn lerp(&self, other: Vec2, t: f32) -> Vec2 { Vec2::new(self.x*(1.0-t) + other.x*(t), self.y*(1.0-t) + other.y*(t)) }
+    pub fn lerp(&self, other: Vec2, t: f32) -> Vec2 { vec2(lerp(self.x, other.x, t), lerp(self.y, other.y, t)) }
     pub fn dot(&self, other: Vec2) -> f32 { self.x*other.x + self.y*other.y } 
     pub fn rotate(&self, radians: f32) -> Vec2 { 
         Vec2::new(
@@ -145,7 +145,7 @@ impl Vec3 {
             return self.div_scalar(self.magnitude()); 
         }
     }
-    pub fn lerp(&self, other: Vec3, t: f32) -> Vec3 { Vec3::new(self.x*(1.0-t) + other.x*(t), self.y*(1.0-t) + other.y*(t), self.z*(1.0-t) + other.z*(t)) }
+    pub fn lerp(&self, other: Vec3, t: f32) -> Vec3 { vec3(lerp(self.x, other.x, t), lerp(self.y, other.y, t), lerp(self.z, other.z, t)) }
     pub fn dist(&self, other: Vec3) -> f32 {(*self - other).magnitude().sqrt()}
     pub fn dot(&self, other: Vec3) -> f32 {self.x*other.x + self.y*other.y + self.z*other.z} // is squ dist lol
     pub fn cross(&self, other: Vec3) -> Vec3 {
@@ -162,9 +162,6 @@ impl Vec3 {
     pub fn spherical_to_cartesian(&self) -> Self {
         vec3(self.x*self.y.sin()*self.z.cos(), self.x*self.y.cos(), self.x*self.y.sin()*self.z.sin())
     }
-    pub fn rotate_about_Vec3(&self, axis: Vec3, theta: f32) -> Vec3 {
-        *self*theta.cos() + (axis.cross(*self)*theta.sin()) + axis * (axis.dot(*self)*(1.0 - theta.cos()))
-    }
     pub fn xy(&self) -> Vec2 { vec2(self.x, self.y) }
     
     pub fn assert_equals(&self, other: Self) {
@@ -178,8 +175,6 @@ impl Vec3 {
         if self.magnitude() != 1.00 { panic!("{} not unit", self); }
     }
 }
-
-// too imprecise
 
 #[test]
 fn test_spherical() {
@@ -254,20 +249,12 @@ impl std::fmt::Display for Vec3 {
     }
 }
 
-
 impl Vec4 {
     pub fn dot(&self, other: Vec4) -> f32 {
         self.x*other.x + self.y * other.y + self.z*other.z + self.w*other.w
     }
-    pub fn tl(&self) -> Vec2 {vec2(self.x, self.y)}
-    pub fn br(&self) -> Vec2 {vec2(self.x + self.z, self.y + self.w)}
-    pub fn tr(&self) -> Vec2 {vec2(self.x + self.z, self.y)}
-    pub fn bl(&self) -> Vec2 {vec2(self.x, self.y + self.w)}
-    pub fn grid_child(&self, i: usize, j: usize, w: usize, h: usize) -> Vec4 {
-        let cw = self.z / w as f32;
-        let ch = self.w / h as f32;
-        vec4(self.x + cw * i as f32, self.y + ch * j as f32, cw, ch)
-    }
+    pub fn lerp(&self, other: Vec4, t: f32) -> Vec4 { vec4(lerp(self.x, other.x, t), lerp(self.y, other.y, t), lerp(self.z, other.z, t), lerp(self.w, other.w, t)) }
+
     pub fn hsv_to_rgb(&self) -> Vec4 {
         let v = self.z;
         let hh = (self.x % 360.0) / 60.0;
@@ -286,6 +273,17 @@ impl Vec4 {
             _ => panic!("unreachable"),
         }
     }
+
+    // as rect
+    pub fn tl(&self) -> Vec2 {vec2(self.x, self.y)}
+    pub fn br(&self) -> Vec2 {vec2(self.x + self.z, self.y + self.w)}
+    pub fn tr(&self) -> Vec2 {vec2(self.x + self.z, self.y)}
+    pub fn bl(&self) -> Vec2 {vec2(self.x, self.y + self.w)}
+    pub fn grid_child(&self, i: usize, j: usize, w: usize, h: usize) -> Vec4 {
+        let cw = self.z / w as f32;
+        let ch = self.w / h as f32;
+        vec4(self.x + cw * i as f32, self.y + ch * j as f32, cw, ch)
+    }
     fn contains(&self, p: Vec2) -> bool {
         !(p.x < self.x || p.x > self.x + self.z || p.y < self.y || p.y > self.y + self.w)
     }
@@ -297,7 +295,6 @@ impl Vec4 {
     }
     fn fit_aspect(&self, a: f32) -> Vec4 {
         let a_self = self.z/self.w;
-
         if a_self > a {
             // parent wider
             vec4((self.z - self.z*(1.0/a))/2.0, 0.0, self.z*1.0/a, self.w)
@@ -308,4 +305,6 @@ impl Vec4 {
     }
 }
 
-
+pub fn lerp(a:f32, b: f32, t: f32) -> f32 {
+    (1.0-t)*a + t*b
+}

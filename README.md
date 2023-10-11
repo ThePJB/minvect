@@ -1,2 +1,2 @@
 # Minvect
-A mini vector library, I mean its mostly for me but feel free to use
+A mini vector library, I mean its mostly for me but feel free to use. The point is for these to be the base types to use for associated applications / libraries to not have to always be converting between.
