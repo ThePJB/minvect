@@ -3,8 +3,8 @@ use crate::*;
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Rect {
-    xy: Vec2,
-    wh: Vec2,
+    pub xy: Vec2,
+    pub wh: Vec2,
 }
 /// rect from scalars
 pub fn rect(x: f32, y: f32, w: f32, h: f32) -> Rect {
@@ -20,6 +20,12 @@ pub fn rectc(xy: Vec2, wh: Vec2) -> Rect {
 }
 
 impl Rect {
+    pub fn i(&self) -> Vec2 { vec2(self.wh.x, 0.0) }
+    pub fn j(&self) -> Vec2 { vec2(0.0, self.wh.y) }
+    pub fn tl(&self) -> Vec2 { self.xy }
+    pub fn tr(&self) -> Vec2 { self.xy + self.i() }
+    pub fn bl(&self) -> Vec2 { self.xy + self.j() }
+    pub fn br(&self) -> Vec2 { self.xy + self.wh }
     pub fn contains(&self, p: Vec2) -> bool {
         let p = p - self.xy;
         p.x >= 0.0 && p.x <= self.wh.x &&
