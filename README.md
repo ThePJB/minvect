@@ -14,3 +14,10 @@ A mini vector library, I mean its mostly for me but feel free to use. The point 
 its more ideal to get the transform of a rect because eg could have some vertex data to transform via a uniform
 could also transform it cpu side too
 but yea there is rect mat3 equivalence and i want to capture it
+
+
+also eg rect dilate rect centroid
+
+surely needing dist point to rect
+signed distance probably replaces most other things
+same thing with segment etc
