@@ -1,17 +1,17 @@
 use crate::*;
 
 #[repr(C)]
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Default, PartialOrd)]
 pub struct Rect {
     pub xy: Vec2,
     pub wh: Vec2,
 }
 /// rect from scalars
-pub fn rect(x: f32, y: f32, w: f32, h: f32) -> Rect {
+pub const fn rect(x: f32, y: f32, w: f32, h: f32) -> Rect {
     Rect { xy: vec2(x,y), wh: vec2(w,h)}
 }
 /// rect from vectors
-pub fn rectv(xy: Vec2, wh: Vec2) -> Rect {
+pub const fn rectv(xy: Vec2, wh: Vec2) -> Rect {
     Rect { xy, wh }
 }
 /// rect centered

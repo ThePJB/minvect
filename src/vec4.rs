@@ -1,13 +1,14 @@
 use crate::util::*;
+use serde::{Serialize, Deserialize};
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, PartialOrd, Serialize, Deserialize, Default)]
 pub struct Vec4 {
     pub x: f32,
     pub y: f32,
     pub z: f32,
     pub w: f32,
 }
-pub fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 { Vec4 { x, y, z, w } }
+pub const fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 { Vec4 { x, y, z, w } }
 
 impl Vec4 {
     pub fn dot(&self, other: Vec4) -> f32 {

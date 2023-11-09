@@ -1,20 +1,22 @@
 use crate::*;
 use crate::util::*;
+use serde::{Serialize, Deserialize};
 
-#[derive(Copy, Clone, Debug, PartialEq, PartialOrd)]
+#[derive(Copy, Clone, Debug, PartialEq, PartialOrd, Serialize, Deserialize, Default)]
 pub struct Vec3 {
     pub x: f32,
     pub y: f32,
     pub z: f32,
 }
-pub fn vec3(x: f32, y: f32, z: f32) -> Vec3 { Vec3 { x, y, z } }
+pub const fn vec3(x: f32, y: f32, z: f32) -> Vec3 { Vec3 { x, y, z } }
 
 impl Vec3 {
+    pub fn abs(&self) -> Self { vec3(self.x.abs(), self.y.abs(), self.z.abs())}
+    pub fn fract(&self) -> Self { vec3(self.x.abs(), self.y.abs(), self.z.abs())}
     pub fn mul_scalar(&self, scalar: f32) -> Vec3 { vec3(self.x * scalar, self.y * scalar, self.z * scalar) }
     pub fn div_scalar(&self, scalar: f32) -> Vec3 { vec3(self.x / scalar, self.y / scalar, self.z / scalar) }
     pub fn magnitude(&self) -> f32 { (self.x*self.x + self.y*self.y + self.z*self.z).sqrt() }
     pub fn square_distance(&self) -> f32 { self.x*self.x + self.y*self.y + self.z*self.z }
-    pub fn abs(&self) -> Self { vec3(self.x.abs(), self.y.abs(), self.z.abs())}
     pub fn normalize(&self) -> Vec3 { 
         let m = self.magnitude();
         if m == 0.0 {

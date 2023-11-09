@@ -1,17 +1,20 @@
 use crate::util::*;
+use serde::{Serialize, Deserialize};
 
-#[derive(Copy, Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq, PartialOrd, Serialize, Deserialize, Default)]
 pub struct Vec2 {
     pub x: f32,
     pub y: f32,
 }
-pub fn vec2(x: f32, y: f32) -> Vec2 { Vec2 { x, y } }
+pub const fn vec2(x: f32, y: f32) -> Vec2 { Vec2 { x, y } }
 
 impl Vec2 {
+    pub fn abs(&self) -> Vec2{ vec2(self.x.abs(), self.y.abs()) }
+    pub fn cross(&self, other: Vec2) -> f32 { self.x * other.y - other.x * self.y }
+    pub fn fract(&self) -> Vec2 { vec2(self.x.fract(), self.y.fract()) }
     pub fn normalize(&self) -> Vec2 { *self / self.dot(*self) }
     pub fn lerp(&self, other: Vec2, t: f32) -> Vec2 { vec2(lerp(self.x, other.x, t), lerp(self.y, other.y, t)) }
     pub fn dot(&self, other: Vec2) -> f32 { self.x*other.x + self.y*other.y } 
-    pub fn cross(&self, other: Vec2) -> f32 { self.x * other.y - other.x * self.y }
     pub fn from_polar(r: f32, theta: f32) -> Vec2 { r * vec2(theta.cos(), theta.sin()) }
     pub fn mul_scalar(&self, scalar: f32) -> Vec2 { vec2(self.x * scalar, self.y * scalar) }
     pub fn div_scalar(&self, scalar: f32) -> Vec2 { vec2(self.x / scalar, self.y / scalar) }

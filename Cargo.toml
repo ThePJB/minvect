@@ -1,7 +1,10 @@
 [package]
 name = "minvect"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2021"
 license = "MIT"
 description = "A mini vector library"
 repository = "https://github.com/ThePJB/minvect"
+
+[dependencies]
+serde = { version = "1.0.192", features = ["derive"]}
