@@ -11,5 +11,3 @@ pub use vec4::*;
 pub use rect::*;
 pub use mat3::*;
 pub use mat4::*;
-
-mod util;

@@ -31,8 +31,8 @@ pub fn mat4_view(pos: Vec3, dir: Vec3) -> [f32; 16] {
     let up = vec3(0.0, 1.0, 0.0);
 
     let zaxis = dir;
-    let xaxis = up.cross(zaxis).normalize();
-    let yaxis = zaxis.cross(xaxis).normalize();
+    let xaxis = up.cross(zaxis).unit().unwrap();
+    let yaxis = zaxis.cross(xaxis).unit().unwrap();
     [
         xaxis.x, yaxis.x, zaxis.x, 0.0,
         xaxis.y, yaxis.y, zaxis.y, 0.0,

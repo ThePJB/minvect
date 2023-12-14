@@ -3,7 +3,7 @@ A mini vector library, I mean its mostly for me but feel free to use. The point 
 
 ## Todo
 ```
-    pub fn to_mat3(&self) -> [f32; 9] {
+    pub const fn to_mat3(&self) -> [f32; 9] {
         [
             self.wh.x, 0.0, -self.xy.x,
             0.0, self.wh.y, -self.xy.y,
@@ -21,3 +21,8 @@ also eg rect dilate rect centroid
 surely needing dist point to rect
 signed distance probably replaces most other things
 same thing with segment etc
+
+
+
+nb a macro would just need map_each and sum and then all the code would need only the overloads and thats it. i mean the overloads just need map each i guess
+i guess proc macro shit was good with map_each. maybe one day

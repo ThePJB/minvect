@@ -72,7 +72,15 @@ impl Rect {
             rect(0.0, (self.wh.y - self.wh.y*(1.0/a))/2.0, self.wh.x, self.wh.y/a)
         }
     }
+    pub fn signed_distance(p: Vec2) -> f32 {
 
+    }
+    pub fn grow(amount: f32) -> Self {
+        
+    }
+    pub fn growp(percentage: f32) -> Self {
+
+    }
 }
 
 #[test]

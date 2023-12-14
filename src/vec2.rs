@@ -1,25 +1,19 @@
-use crate::util::*;
 use serde::{Serialize, Deserialize};
-
 #[derive(Copy, Clone, Debug, PartialEq, PartialOrd, Serialize, Deserialize, Default)]
 pub struct Vec2 {
     pub x: f32,
     pub y: f32,
 }
 pub const fn vec2(x: f32, y: f32) -> Vec2 { Vec2 { x, y } }
-
 impl Vec2 {
-    pub fn abs(&self) -> Vec2{ vec2(self.x.abs(), self.y.abs()) }
+    pub fn norm(&self) -> f32 { self.dot(*self).sqrt() }
+    pub fn dist(&self, other: Self) -> f32 { (*self - other).norm() }
+    pub fn lerp(&self, other: Self, t: f32) -> Self { *self * t + other * (1.0 - t) }
+    pub fn unit(&self) -> Option<Self> { let n = self.norm(); if n == 0.0 {None} else {Some(*self/n)}}
+    pub fn dot(&self, other: Self) -> f32 { self.x*other.x + self.y*other.y }
+    pub fn floor(&self) -> Self { vec2(self.x.floor(), self.y.floor()) }
+    pub fn ceil(&self) -> Self { vec2(self.x.ceil(), self.y.ceil()) }
     pub fn cross(&self, other: Vec2) -> f32 { self.x * other.y - other.x * self.y }
-    pub fn fract(&self) -> Vec2 { vec2(self.x.fract(), self.y.fract()) }
-    pub fn normalize(&self) -> Vec2 { *self / self.dot(*self) }
-    pub fn lerp(&self, other: Vec2, t: f32) -> Vec2 { vec2(lerp(self.x, other.x, t), lerp(self.y, other.y, t)) }
-    pub fn dot(&self, other: Vec2) -> f32 { self.x*other.x + self.y*other.y } 
-    pub fn from_polar(r: f32, theta: f32) -> Vec2 { r * vec2(theta.cos(), theta.sin()) }
-    pub fn mul_scalar(&self, scalar: f32) -> Vec2 { vec2(self.x * scalar, self.y * scalar) }
-    pub fn div_scalar(&self, scalar: f32) -> Vec2 { vec2(self.x / scalar, self.y / scalar) }
-    pub fn mul_elem(&self, other: Vec2) -> Vec2 { vec2(self.x * other.x, self.y * other.y)}
-    pub fn div_elem(&self, other: Vec2) -> Vec2 { vec2(self.x / other.x, self.y / other.y)}
     pub fn mul_complex(&self, other: Vec2) -> Vec2 {
         let a = self.x;
         let b = self.y;
@@ -43,11 +37,95 @@ impl std::fmt::Display for Vec2 {
         write!(f, "({}, {})", self.x, self.y)
     }
 }
+impl std::ops::Neg for Vec2 {
+    type Output = Vec2;
+    fn neg(self) -> Vec2 {
+        vec2(-self.x,-self.y)
+    }
+}
 impl std::ops::Add<Vec2> for Vec2 {
     type Output = Vec2;
+    fn add(self, rhs: Vec2) -> Vec2 {
+        vec2(self.x+rhs.x, self.y+rhs.y)
+    }
+}
+impl std::ops::Add<Vec2> for f32 {
+    type Output = Vec2;
+    fn add(self, rhs: Vec2) -> Vec2 {
+        vec2(self + rhs.x, self + rhs.y)
+    }
+}
+impl std::ops::Add<f32> for Vec2 {
+    type Output = Vec2;
+    fn add(self, rhs: f32) -> Vec2 {
+        vec2(self.x + rhs, self.y + rhs)
+    }
+}
+impl std::ops::Sub<Vec2> for Vec2 {
+    type Output = Vec2;
+    fn sub(self, rhs: Vec2) -> Vec2 {
+        vec2(self.x - rhs.x, self.y - rhs.y)
+    }
+}
+impl std::ops::Sub<f32> for Vec2 {
+    type Output = Vec2;
+    fn sub(self, rhs: f32) -> Self::Output {
+        vec2(self.x - rhs, self.y - rhs)
+    }
+}
+impl std::ops::Sub<Vec2> for f32 {
+    type Output = Vec2;
+    fn sub(self, rhs: Vec2) -> Self::Output {
+        vec2(self - rhs.x, self - rhs.y)
+    }
+}
+impl std::ops::Mul<f32> for Vec2 {
+    type Output = Vec2;
+    fn mul(self, rhs: f32) -> Vec2 {
+        vec2(self.x*rhs, self.y*rhs)
+    }
+}
+impl std::ops::Mul<Vec2> for f32 {
+    type Output = Vec2;
+    fn mul(self, rhs: Vec2) -> Vec2 {
+        vec2(self*rhs.x, self*rhs.y)
+    }
+}
+impl std::ops::Mul<Vec2> for Vec2 {
+    type Output = Vec2;
+    fn mul(self, rhs: Vec2) -> Vec2 {
+        vec2(self.x/rhs.x, self.y/rhs.y)
+    }
+}
+impl std::ops::Div<f32> for Vec2 {
+    type Output = Vec2;
+    fn div(self, rhs: f32) -> Vec2 {
+        vec2(self.x/rhs,self.y/rhs)
+    }
+}
+impl std::ops::Div<Vec2> for f32 {
+    type Output = Vec2;
+    fn div(self, rhs: Vec2) -> Vec2 {
+        vec2(self/rhs.x,self/rhs.y)
+    }
+}
+impl std::ops::Div<Vec2> for Vec2 {
+    type Output = Vec2;
+    fn div(self, rhs: Vec2) -> Vec2 {
+        vec2(self.x/rhs.x,self.y/rhs.y)
+    }
+}
+impl std::ops::Rem<f32> for Vec2 {
+    type Output = Vec2;
+    fn rem(self, rhs: f32) -> Self::Output {
+        vec2(self.x % rhs, self.y % rhs)
+    }
+}
+impl std::ops::Rem<Vec2> for Vec2 {
+    type Output = Vec2;
 
-    fn add(self, _rhs: Vec2) -> Vec2 {
-        Vec2 { x: self.x + _rhs.x, y: self.y + _rhs.y }
+    fn rem(self, rhs: Vec2) -> Self::Output {
+        vec2(self.x % rhs.x, self.y % rhs.y)
     }
 }
 impl std::ops::AddAssign<Vec2> for Vec2 {
@@ -60,58 +138,24 @@ impl std::ops::SubAssign<Vec2> for Vec2 {
         *self = *self - rhs;
     }
 }
-impl std::ops::Sub<Vec2> for Vec2 {
-    type Output = Vec2;
-
-    fn sub(self, _rhs: Vec2) -> Vec2 {
-        Vec2 { x: self.x - _rhs.x, y: self.y - _rhs.y }
-    }
-}
-impl std::ops::Mul<f32> for Vec2 {
-    type Output = Vec2;
-
-    fn mul(self, _rhs: f32) -> Vec2 {
-        self.mul_scalar(_rhs)
-    }
-}
-impl std::ops::Mul<Vec2> for f32 {
-    type Output = Vec2;
-
-    fn mul(self, _rhs: Vec2) -> Vec2 {
-        _rhs.mul_scalar(self)
-    }
-}
-impl std::ops::Div<f32> for Vec2 {
-    type Output = Vec2;
-
-    fn div(self, _rhs: f32) -> Vec2 {
-        self.div_scalar(_rhs)
-    }
-}
-impl std::ops::Div<Vec2> for Vec2 {
-    type Output = Vec2;
-
-    fn div(self, _rhs: Vec2) -> Vec2 {
-        self.div_elem(_rhs)
-    }
-}
-impl std::ops::Mul<Vec2> for Vec2 {
-    type Output = Vec2;
-
-    fn mul(self, _rhs: Vec2) -> Vec2 {
-        self.mul_elem(_rhs)
-    }
-}
-impl std::ops::Neg for Vec2 {
-    type Output = Vec2;
-
-    fn neg(self) -> Vec2 {
-        self.mul_scalar(-1.0)
+impl std::ops::MulAssign<f32> for Vec2 {
+    fn mul_assign(&mut self, rhs: f32) {
+        *self = *self * rhs;
     }
 }
 impl std::ops::MulAssign for Vec2 {
     fn mul_assign(&mut self, rhs: Self) {
         self.x *= rhs.x;
         self.y *= rhs.y;
+    }
+}
+impl std::ops::DivAssign<f32> for Vec2 {
+    fn div_assign(&mut self, rhs: f32) {
+        *self = *self / rhs;
+    }
+}
+impl std::ops::RemAssign<f32> for Vec2 {
+    fn rem_assign(&mut self, rhs: f32) {
+        *self = vec2(self.x % rhs, self.y % rhs);
     }
 }
