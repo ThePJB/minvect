@@ -11,6 +11,8 @@ impl Vec2 {
     pub fn lerp(&self, other: Self, t: f32) -> Self { *self * t + other * (1.0 - t) }
     pub fn unit(&self) -> Option<Self> { let n = self.norm(); if n == 0.0 {None} else {Some(*self/n)}}
     pub fn dot(&self, other: Self) -> f32 { self.x*other.x + self.y*other.y }
+    pub fn min(&self, other: Self) -> Self { vec2(self.x.min(other.x), self.y.min(other.y)) }
+    pub fn max(&self, other: Self) -> Self { vec2(self.x.max(other.x), self.y.max(other.y)) }
     pub fn floor(&self) -> Self { vec2(self.x.floor(), self.y.floor()) }
     pub fn ceil(&self) -> Self { vec2(self.x.ceil(), self.y.ceil()) }
     pub fn cross(&self, other: Vec2) -> f32 { self.x * other.y - other.x * self.y }

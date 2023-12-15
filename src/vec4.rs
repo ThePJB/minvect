@@ -15,6 +15,8 @@ impl Vec4 {
     pub fn lerp(&self, other: Self, t: f32) -> Self { *self * t + other * (1.0 - t) }
     pub fn unit(&self) -> Option<Self> { let n = self.norm(); if n == 0.0 {None} else {Some(*self/n)}}
     pub fn dot(&self, other: Self) -> f32 { self.x*other.x + self.y*other.y + self.z*other.z + self.w*other.w }
+    pub fn min(&self, other: Self) -> Self { vec4(self.x.min(other.x), self.y.min(other.y), self.z.min(other.z), self.w.min(other.w)) }
+    pub fn max(&self, other: Self) -> Self { vec4(self.x.max(other.x), self.y.max(other.y), self.z.max(other.z), self.w.max(other.w)) }
     pub fn floor(&self) -> Self { vec4(self.x.floor(), self.y.floor(), self.z.floor(), self.w.floor()) }
     pub fn ceil(&self) -> Self { vec4(self.x.ceil(), self.y.ceil(), self.z.ceil(), self.w.ceil()) }
     pub fn hsv_to_rgb(&self) -> Vec4 {

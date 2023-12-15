@@ -26,6 +26,9 @@ impl Rect {
     pub fn tr(&self) -> Vec2 { self.xy + self.i() }
     pub fn bl(&self) -> Vec2 { self.xy + self.j() }
     pub fn br(&self) -> Vec2 { self.xy + self.wh }
+    pub fn w(&self) -> f32 { self.wh.x }
+    pub fn h(&self) -> f32 { self.wh.y }
+    pub fn center(&self) -> Vec2 { self.xy + self.wh/2.0 }
     pub fn contains(&self, p: Vec2) -> bool {
         let p = p - self.xy;
         p.x >= 0.0 && p.x <= self.wh.x &&
@@ -72,14 +75,15 @@ impl Rect {
             rect(0.0, (self.wh.y - self.wh.y*(1.0/a))/2.0, self.wh.x, self.wh.y/a)
         }
     }
-    pub fn signed_distance(p: Vec2) -> f32 {
-
+    pub fn signed_distance(&self, p: Vec2) -> f32 {
+        let p = p - self.center();
+        let p = vec2(p.x.abs(), p.y.abs());
+        let d = p - (self.wh/2.0); // i guess its / 2
+        d.max(vec2(0.0, 0.0)).norm() + d.x.max(d.y).min(0.0)
     }
-    pub fn grow(amount: f32) -> Self {
-        
-    }
-    pub fn growp(percentage: f32) -> Self {
-
+    /// grows by a fixed amount
+    pub fn grow(&self, x: f32, y: f32) -> Self {
+        rectc(self.center(), self.wh + vec2(x,y))
     }
 }
 
@@ -140,4 +144,13 @@ fn test_rect_fit_aspect() {
     let aspect = 2.0;
     let fitted_rect = r.fit_aspect(aspect);
     assert_eq!(fitted_rect, rect(0.0, 1.0, 4.0, 2.0));
+}
+#[test]
+fn test_sdf() {
+    let p = vec2(69.0, 420.0);
+    let r = rect(0.0, 0.0,69.0, 69.0);
+    assert_eq!(r.signed_distance(p), 351.0);
+    let p = vec2(2.0, 3.0);
+    let r = rect(-2.0, -2.0,1.0, 1.0);
+    assert_eq!(r.signed_distance(p), 5.0);
 }

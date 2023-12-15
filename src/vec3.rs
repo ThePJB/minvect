@@ -12,6 +12,8 @@ impl Vec3 {
     pub fn lerp(&self, other: Self, t: f32) -> Self { *self * t + other * (1.0 - t) }
     pub fn unit(&self) -> Option<Self> { let n = self.norm(); if n == 0.0 {None} else {Some(*self/n)}}
     pub fn dot(&self, other: Self) -> f32 { self.x * other.x + self.y * other.y + self.z * other.z }
+    pub fn min(&self, other: Self) -> Self { vec3(self.x.min(other.x), self.y.min(other.y), self.z.min(other.z)) }
+    pub fn max(&self, other: Self) -> Self { vec3(self.x.max(other.x), self.y.max(other.y), self.z.max(other.z)) }
     pub fn floor(&self) -> Self { vec3(self.x.floor(), self.y.floor(), self.z.floor()) }
     pub fn ceil(&self) -> Self { vec3(self.x.ceil(), self.y.ceil(), self.z.ceil()) }
     pub fn cross(&self, other: Vec3) -> Vec3 {
