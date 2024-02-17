@@ -96,7 +96,7 @@ impl std::ops::Mul<Vec2> for f32 {
 impl std::ops::Mul<Vec2> for Vec2 {
     type Output = Vec2;
     fn mul(self, rhs: Vec2) -> Vec2 {
-        vec2(self.x/rhs.x, self.y/rhs.y)
+        vec2(self.x*rhs.x, self.y*rhs.y)
     }
 }
 impl std::ops::Div<f32> for Vec2 {
